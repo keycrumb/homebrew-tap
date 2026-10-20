@@ -24,8 +24,9 @@ brew install --cask keycrumb/tap/keycrumb
 
 Launch KeyCrumb from Applications. If you already installed it manually, quit it
 and use `brew install --cask --adopt keycrumb/tap/keycrumb` only when the installed
-app matches the cask's release. Homebrew refuses to adopt a different build;
-do not use `--force` to replace a newer app with an older alpha.
+app matches the cask's release. Check its version and build in About KeyCrumb
+first: Homebrew may adopt a different build when an app has its own updater.
+Do not use `--force` to replace a newer app with an older alpha.
 
 ## Updates and removal
 

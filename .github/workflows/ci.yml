@@ -34,15 +34,24 @@ jobs:
           brew install --cask keycrumb/tap/keycrumb
           codesign --verify --deep --strict /Applications/KeyCrumb.app
           spctl --assess --type execute --verbose=2 /Applications/KeyCrumb.app
-      - name: Launch and preserve preferences through reinstall and uninstall
+      - name: Launch the app
+        timeout-minutes: 2
         run: |
-          open /Applications/KeyCrumb.app
+          /Applications/KeyCrumb.app/Contents/MacOS/KeyCrumb > "$RUNNER_TEMP/keycrumb.log" 2>&1 &
+          app_pid=$!
+          trap 'kill "$app_pid" 2>/dev/null || true' EXIT
           sleep 5
-          pgrep -x KeyCrumb
-          osascript -e 'tell application id "com.keycrumb.app" to quit'
-          defaults write com.keycrumb.app HomebrewSmokeTest -bool true
+          kill -0 "$app_pid"
+          kill "$app_pid"
+          wait "$app_pid" || test "$?" = 143
+      - name: Preserve sandbox preferences through reinstall and uninstall
+        timeout-minutes: 3
+        run: |
+          preferences="$HOME/Library/Containers/com.keycrumb.app/Data/Library/Preferences/com.keycrumb.app.plist"
+          test -f "$preferences"
+          defaults write "$preferences" HomebrewSmokeTest -bool true
           brew reinstall --cask keycrumb/tap/keycrumb
-          test "$(defaults read com.keycrumb.app HomebrewSmokeTest)" = 1
+          test "$(defaults read "$preferences" HomebrewSmokeTest)" = 1
           brew uninstall --cask keycrumb/tap/keycrumb
           test ! -e /Applications/KeyCrumb.app
-          test "$(defaults read com.keycrumb.app HomebrewSmokeTest)" = 1
+          test "$(defaults read "$preferences" HomebrewSmokeTest)" = 1
