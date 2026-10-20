@@ -1,0 +1,48 @@
+name: Cask checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: cask-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  cask:
+    runs-on: macos-15
+    timeout-minutes: 20
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_ANALYTICS: 1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Register the checked-out tap
+        run: |
+          test "$(uname -m)" = arm64
+          brew tap --custom-remote keycrumb/tap "$GITHUB_WORKSPACE"
+          brew trust --cask keycrumb/tap/keycrumb
+      - name: Style and online audit
+        run: |
+          brew style --cask keycrumb/tap/keycrumb
+          brew audit --cask --online keycrumb/tap/keycrumb
+      - name: Install and assess the published app
+        run: |
+          brew install --cask keycrumb/tap/keycrumb
+          codesign --verify --deep --strict /Applications/KeyCrumb.app
+          spctl --assess --type execute --verbose=2 /Applications/KeyCrumb.app
+      - name: Launch and preserve preferences through reinstall and uninstall
+        run: |
+          open /Applications/KeyCrumb.app
+          sleep 5
+          pgrep -x KeyCrumb
+          osascript -e 'tell application id "com.keycrumb.app" to quit'
+          defaults write com.keycrumb.app HomebrewSmokeTest -bool true
+          brew reinstall --cask keycrumb/tap/keycrumb
+          test "$(defaults read com.keycrumb.app HomebrewSmokeTest)" = 1
+          brew uninstall --cask keycrumb/tap/keycrumb
+          test ! -e /Applications/KeyCrumb.app
+          test "$(defaults read com.keycrumb.app HomebrewSmokeTest)" = 1
