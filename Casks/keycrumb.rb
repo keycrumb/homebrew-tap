@@ -9,14 +9,12 @@ cask "keycrumb" do
 
   livecheck do
     url "https://downloads.keycrumb.com/appcast.xml"
-    strategy :sparkle do |item|
-      item.short_version
-    end
+    strategy :sparkle, &:short_version
   end
 
   auto_updates true
   depends_on arch: :arm64
-  depends_on macos: ">= :sequoia"
+  depends_on macos: :sequoia
 
   app "KeyCrumb.app"
 
