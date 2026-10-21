@@ -1,6 +1,6 @@
 cask "keycrumb" do
-  version "0.1.0-alpha.5"
-  sha256 "89696c50a80125563ab7d5588c2d27709f2556d60221e20102c29328144a6287"
+  version "0.1.0-alpha.6"
+  sha256 "8f5a3733fd686622d7e360e2ed90923c73be1f2d3f4f4c0cf2052680c61680e7"
 
   url "https://downloads.keycrumb.com/v#{version}/KeyCrumb-#{version}.dmg"
   name "KeyCrumb"
