@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:keycrumb:cheat-sheet:v1",
+  "title": "KeyCrumb cheat sheet v1",
+  "$comment": "Schema identity is descriptive; hosted availability is not claimed. Runtime also enforces unique section/entry IDs and at most 2000 entries overall.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "title",
+    "sections"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "\\S"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 4000
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": {
+        "$ref": "#/$defs/section"
+      }
+    },
+    "icon": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional local PNG path inside the library. Images are separately validated: static PNG, exactly 256 x 256 pixels, at most 262144 bytes. Invalid assets use a placeholder and warning."
+    }
+  },
+  "$defs": {
+    "section": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "entries"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "\\S"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "\\S"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 4000
+        },
+        "entries": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/entry"
+          }
+        },
+        "icon": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Optional local PNG path inside the library. Images are separately validated: static PNG, exactly 256 x 256 pixels, at most 262144 bytes. Invalid assets use a placeholder and warning."
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "shortcuts"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "\\S"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "\\S"
+        },
+        "text": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 4000
+        },
+        "shortcuts": {
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/shortcut"
+          }
+        }
+      }
+    },
+    "shortcut": {
+      "type": "object",
+      "required": [
+        "steps"
+      ],
+      "properties": {
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/$defs/step"
+          }
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "required": [
+        "modifiers",
+        "key"
+      ],
+      "properties": {
+        "modifiers": {
+          "type": "array",
+          "uniqueItems": true,
+          "maxItems": 5,
+          "items": {
+            "enum": [
+              "function",
+              "control",
+              "option",
+              "shift",
+              "command"
+            ]
+          }
+        },
+        "key": {
+          "anyOf": [
+            {
+              "enum": [
+                "return",
+                "enter",
+                "tab",
+                "escape",
+                "space",
+                "delete",
+                "forwardDelete",
+                "arrowLeft",
+                "arrowRight",
+                "arrowUp",
+                "arrowDown",
+                "home",
+                "end",
+                "pageUp",
+                "pageDown",
+                "capsLock",
+                "f1",
+                "f2",
+                "f3",
+                "f4",
+                "f5",
+                "f6",
+                "f7",
+                "f8",
+                "f9",
+                "f10",
+                "f11",
+                "f12",
+                "f13",
+                "f14",
+                "f15",
+                "f16",
+                "f17",
+                "f18",
+                "f19",
+                "f20",
+                "f21",
+                "f22",
+                "f23",
+                "f24"
+              ]
+            },
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1,
+              "pattern": "^[^\\s\\u0000-\\u001f\\u007f-\\u009f]$"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

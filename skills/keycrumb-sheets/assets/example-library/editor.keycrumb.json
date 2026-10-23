@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "title": "Editor example",
+  "description": "Illustrative macOS bindings; adapt to your editor and keymap.",
+  "icon": "icons/editor.png",
+  "sections": [
+    {
+      "id": "editing",
+      "title": "Editing",
+      "description": "Find text and work with a selection.",
+      "icon": "icons/editor.png",
+      "entries": [
+        {
+          "id": "find",
+          "title": "Find",
+          "text": "Search the current document.",
+          "shortcuts": [{"steps": [{"modifiers": ["command"], "key": "f"}]}]
+        },
+        {
+          "id": "redo",
+          "title": "Redo alternatives",
+          "shortcuts": [
+            {"steps": [{"modifiers": ["command", "shift"], "key": "z"}]},
+            {"steps": [{"modifiers": ["command"], "key": "y"}]}
+          ]
+        },
+        {
+          "id": "comment-sequence",
+          "title": "Comment sequence",
+          "text": "Illustrative two-step binding; verify before use.",
+          "shortcuts": [{"steps": [
+            {"modifiers": ["command"], "key": "k"},
+            {"modifiers": ["command"], "key": "c"}
+          ]}]
+        },
+        {
+          "id": "keymap-note",
+          "title": "Check your keymap",
+          "text": "Custom and regional keyboard layouts may differ.",
+          "shortcuts": []
+        }
+      ]
+    }
+  ]
+}

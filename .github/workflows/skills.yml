@@ -1,0 +1,29 @@
+name: Skills checks
+on:
+  push:
+    branches: [main]
+    paths: ["skills/**", "plugin.json", "README.md", "AGENTS.md", "LICENSE-skills.txt", "scripts/build_skills.py", "tests/**", ".github/workflows/skills*.yml"]
+  pull_request:
+    paths: ["skills/**", "plugin.json", "README.md", "AGENTS.md", "LICENSE-skills.txt", "scripts/build_skills.py", "tests/**", ".github/workflows/skills*.yml"]
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  skills:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Install optional validator and test dependencies
+        run: python -m pip install -r skills/keycrumb-sheets/scripts/requirements.txt PyYAML==6.0.3
+      - name: Check metadata, examples, validator and portable archives
+        run: python -m unittest discover -s tests -v
+      - name: Check whitespace
+        run: git diff --check HEAD^ HEAD

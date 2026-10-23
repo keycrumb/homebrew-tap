@@ -1,0 +1,3 @@
+Original geometric editor icon and workflow illustration created for KeyCrumb, 2026.
+Licensed under the bundled MIT License. No vendor logos or third-party artwork.
+Shortcut bindings are illustrative and do not imply editor-vendor endorsement.
