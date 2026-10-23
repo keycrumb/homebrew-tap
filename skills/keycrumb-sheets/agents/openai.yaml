@@ -1,0 +1,4 @@
+interface:
+  display_name: "KeyCrumb sheets"
+  short_description: "Create readable Markdown and JSON cheat sheets"
+  default_prompt: "Use $keycrumb-sheets to create a concise KeyCrumb cheat sheet with complete local assets."

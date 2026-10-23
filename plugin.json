@@ -1,0 +1,10 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "keycrumb-skills",
+  "version": "0.1.0",
+  "description": "Create local Markdown and JSON cheat sheets for KeyCrumb.",
+  "author": {"name": "KeyCrumb", "url": "https://keycrumb.com"},
+  "homepage": "https://keycrumb.com",
+  "repository": "https://github.com/keycrumb/homebrew-tap",
+  "license": "MIT"
+}

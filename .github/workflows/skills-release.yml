@@ -1,0 +1,52 @@
+name: Release agent skills
+on:
+  push:
+    tags: ["skills-v*"]
+permissions:
+  contents: read
+concurrency:
+  group: skills-release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    uses: ./.github/workflows/skills.yml
+  package:
+    needs: verify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+      - name: Build release archives with tag and manifest version agreement
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: python scripts/build_skills.py --version "${RELEASE_TAG#skills-v}" --output-dir dist
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: agent-skills
+          path: dist/*
+          if-no-files-found: error
+  release:
+    needs: package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: agent-skills
+          path: dist
+      - name: Publish separate non-latest skills release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          cd dist
+          sha256sum --check SHA256SUMS
+          gh release create "$RELEASE_TAG" ./*.zip SHA256SUMS --verify-tag --latest=false --title "KeyCrumb agent skills ${RELEASE_TAG#skills-v}" --notes "Portable keycrumb-sheets skill and skills-only Agent Plugins package. MIT licensed skill material; the KeyCrumb app remains proprietary. Verify SHA256SUMS before installing."

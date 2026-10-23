@@ -2,7 +2,9 @@ name: Cask checks
 on:
   push:
     branches: [main]
+    paths: ["Casks/**", ".github/workflows/ci.yml"]
   pull_request:
+    paths: ["Casks/**", ".github/workflows/ci.yml"]
   workflow_dispatch:
 permissions:
   contents: read
