@@ -59,6 +59,23 @@ class ValidatorTests(unittest.TestCase):
             data['sections'][0]['entries'][0]['shortcuts'][0]['steps'] = [step]
             self.assertIn('shortcuts', self.run_sheet(data, 1))
 
+    def test_native_empty_labels_with_zero_width_space(self):
+        for path in [('title',), ('sections', 0, 'id'), ('sections', 0, 'title'),
+                     ('sections', 0, 'entries', 0, 'id'),
+                     ('sections', 0, 'entries', 0, 'title')]:
+            for value in ['\u200b', ' \u200b\t\n']:
+                data = minimal()
+                item = data
+                for part in path[:-1]:
+                    item = item[part]
+                item[path[-1]] = value
+                with self.subTest(path=path, value=repr(value)):
+                    self.assertIn('must not be empty', self.run_sheet(data, 1))
+        data = minimal()
+        data['title'] = '\u200bEditor\u200b'
+        data['description'] = '\u200b'
+        self.run_sheet(data)
+
     def test_duplicate_ids_and_entry_overflow(self):
         data = minimal()
         second = copy.deepcopy(data['sections'][0])
@@ -94,6 +111,14 @@ class ValidatorTests(unittest.TestCase):
                      '../icon.png', '%2e%2e/icon.png']:
             data['icon'] = path
             self.assertIn('warning: $.icon', self.run_sheet(data))
+        Image.new('RGBA', (256, 256), 'red').save(icon)
+        data['icon'] = './' * 508 + 'icon.png'  # Exactly 1024 raw UTF-8 bytes.
+        self.assertNotIn('warning:', self.run_sheet(data))
+        data['icon'] = './' * 510 + 'icon.png'
+        self.assertIn('warning: $.icon', self.run_sheet(data))
+        Image.new('RGBA', (256, 256), 'red').save(self.root / 'ééé.png')
+        data['icon'] = './' * 508 + 'ééé.png'  # 1023 scalars, 1026 UTF-8 bytes.
+        self.assertIn('1024 UTF-8 bytes', self.run_sheet(data))
         data['icon'] = 'icon.png'
         for size in [(256, 256), (128, 256)]:
             Image.new('RGBA', size, 'red').save(icon)

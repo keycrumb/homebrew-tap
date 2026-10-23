@@ -21,7 +21,8 @@ sections. Optional `description`, `text` and `icon` fields may be omitted or nul
 Unknown properties are ignored by the app; do not invent layout, entry images,
 verification badges or metadata fields. Columns are chosen by the viewer.
 
-Titles contain non-whitespace text, at most 200 Unicode scalars. IDs contain
+Titles contain non-whitespace text, at most 200 Unicode scalars. U+200B alone
+also counts as empty under the native whitespace rule. IDs contain
 non-whitespace text, at most 128 scalars. Section IDs are unique within the sheet;
 entry IDs are unique across all sections. Descriptions and entry text are at most
 4000 scalars. A sheet has 1–100 sections, at most 200 entries per section and 2000
@@ -58,6 +59,7 @@ never the installed skill or current working directory. `icons/` and `images/`
 are conventions. Include every referenced asset, preserve existing destination
 files, and omit optional icons when no suitable artwork is available.
 
+Raw icon paths are at most 1024 UTF-8 bytes, before path normalization.
 JSON icons must be static PNGs, exactly **256 × 256 pixels**, at most **262144
 bytes**, preferably transparent. A renamed JPEG is not PNG. Remote, absolute and
 escaping paths are rejected. Invalid or missing icons yield a neutral placeholder

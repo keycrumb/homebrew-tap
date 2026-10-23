@@ -12,6 +12,10 @@ import warnings
 
 MAX_SHEET = 2 * 1024 * 1024
 MAX_ICON = 262144
+# Foundation CharacterSet.whitespacesAndNewlines includes U+200B; Python \s does not.
+LABEL_WHITESPACE = ('\u0009\u000a\u000b\u000c\u000d\u0020\u0085\u00a0\u1680'
+                    '\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008'
+                    '\u2009\u200a\u200b\u2028\u2029\u202f\u205f\u3000')
 
 
 def bounded_read(path, limit):
@@ -28,6 +32,8 @@ def bounded_read(path, limit):
 
 def icon_warning(value, root, image_module):
     try:
+        if len(value.encode('utf-8')) > 1024:
+            raise ValueError('icon path exceeds 1024 UTF-8 bytes')
         if urlsplit(value).scheme or value.startswith('/'):
             raise ValueError('use a local path relative to the library')
         path = (root / unquote(value)).resolve()
@@ -85,10 +91,15 @@ def validate(sheet, root, validator, image_module):
         errors.append((error.json_path, error.message))
     if errors:
         return errors, notices
+    if not document['title'].strip(LABEL_WHITESPACE):
+        errors.append(('$.title', 'must not be empty'))
     section_ids, entry_ids = set(), set()
     total = 0
     for i, section in enumerate(document['sections']):
         section_path = f'$.sections[{i}]'
+        for field in ('id', 'title'):
+            if not section[field].strip(LABEL_WHITESPACE):
+                errors.append((section_path + '.' + field, 'must not be empty'))
         section_id = unicodedata.normalize('NFC', section['id'])
         if section_id in section_ids:
             errors.append((section_path + '.id', 'duplicate section ID'))
@@ -96,6 +107,9 @@ def validate(sheet, root, validator, image_module):
         total += len(section['entries'])
         for j, entry in enumerate(section['entries']):
             entry_path = f'{section_path}.entries[{j}]'
+            for field in ('id', 'title'):
+                if not entry[field].strip(LABEL_WHITESPACE):
+                    errors.append((entry_path + '.' + field, 'must not be empty'))
             entry_id = unicodedata.normalize('NFC', entry['id'])
             if entry_id in entry_ids:
                 errors.append((entry_path + '.id', 'duplicate entry ID across sections'))
