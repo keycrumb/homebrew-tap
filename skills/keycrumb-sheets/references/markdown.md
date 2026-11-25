@@ -14,7 +14,13 @@ inside table code. Put multiline commands, awkward backticks or complex pipe
 expressions in separate fenced blocks instead. Pick a fence longer than any run
 of backticks in its contents. Keep unrelated commands in separate copy targets.
 Do not include shell prompts, line numbers or citations in copied command text.
-Explain placeholders outside code; do not execute commands while writing a sheet.
+Write placeholders as `<branch>` or `<path>` and say what to substitute in the
+row's label or a sentence below the table. Do not execute commands while writing a sheet.
+
+Mark commands that discard work or delete data, such as `git reset --hard` or
+`git worktree remove --force`, with a short visible note next to the command:
+what is lost and whether it can be undone. Never hide such a warning in a
+comment inside the copied command.
 
 Images must be local, decodable files inside the selected library, at most 10 MiB.
 They resolve relative to the library root. PNG is a portable choice. The 256 × 256
