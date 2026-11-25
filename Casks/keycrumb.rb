@@ -1,6 +1,6 @@
 cask "keycrumb" do
-  version "0.1.0-alpha.14"
-  sha256 "d1744e8b7ebf95b05b6200df1b7ff5139d50c12be0c124383d584da0ceef7f8f"
+  version "0.2.0"
+  sha256 "15fd7e2101987133d28af1010db9fba05af02b0c81b1b6e96a5d4bc1b5163562"
 
   url "https://downloads.keycrumb.com/v#{version}/KeyCrumb-#{version}.dmg"
   name "KeyCrumb"
@@ -14,7 +14,7 @@ cask "keycrumb" do
 
   auto_updates true
   depends_on arch: :arm64
-  depends_on macos: :sequoia
+  depends_on macos: :tahoe
 
   app "KeyCrumb.app"
 

@@ -5,7 +5,7 @@ local cheat sheets. This tap tracks the current public alpha. The app is free
 and proprietary; this repository contains its Homebrew installation definition,
 not the app source.
 
-Requires Apple silicon and macOS 15 (Sequoia) or newer. Intel is untested and is
+Requires Apple silicon and macOS 26 (Tahoe) or newer. Intel is untested and is
 not enabled in this cask.
 
 ## Install

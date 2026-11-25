@@ -6,7 +6,7 @@ distributed from `downloads.keycrumb.com`; app source and signing credentials do
 not belong here.
 
 - Track only published releases. Verify the immutable DMG against its checksum.
-- Preserve Apple silicon and macOS 15+ requirements until wider support is verified.
+- Preserve Apple silicon and macOS 26+ requirements until wider support is verified.
 - Keep Sparkle enabled and `auto_updates true`. Do not bypass Gatekeeper.
 - Never delete preferences or user sheets during uninstall; do not add `zap` paths.
 - Use Homebrew's cask DSL and tools; avoid custom cask release scripts or dependencies.
